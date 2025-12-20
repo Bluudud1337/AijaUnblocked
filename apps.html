@@ -37,33 +37,31 @@ header button:hover {
     background-color: #000;
 }
 
-/* section wrapper */
 .section-wrapper {
     position: relative;
     overflow: hidden;
 }
 
-/* purple background layer */
 .section {
     background-color: #0f0692;
     padding: 60px 40px;
     text-align: center;
     position: relative;
-    z-index: 1;
 }
 
-/* particle layer (above purple, below content) */
+/* PARTICLES (middle layer) */
 .particle-overlay {
     position: absolute;
     inset: 0;
     background-image: url("https://i.gifer.com/origin/32/3258a58e0930aa1011fd38dd00f56274_w200.gif");
     background-repeat: repeat;
     background-size: 300px 300px;
-    opacity: 0.50;
+    opacity: 1;
     pointer-events: none;
-    z-index: 1;}
+    z-index: 2;
+}
 
-/* content layer */
+/* CONTENT (top layer) */
 .section-content {
     position: relative;
     z-index: 3;
@@ -77,6 +75,8 @@ header button:hover {
     margin: 15px;
     border-radius: 10px;
     cursor: pointer;
+    position: relative;
+    z-index: 4; /* FORCE ABOVE PARTICLES */
 }
 
 .app-card img {
@@ -121,39 +121,42 @@ function openFullscreen(url) {
 </header>
 
 <div class="section-wrapper">
-
-    <div class="particle-overlay"></div>
-
     <div class="section">
+
+        <!-- particles -->
+        <div class="particle-overlay"></div>
+
+        <!-- content -->
         <div class="section-content">
-            <h2>Full-Screen Apps</h2>
+            <h2>Apps</h2>
 
             <div class="app-card" onclick="openFullscreen('https://scramjet.mercurywork.shop/')">
                 <img src="https://scramjet.mercurywork.shop/favicon.webp">
-                <h3>Scramjet proxy</h3>
+                <h3>Scramjet</h3>
             </div>
 
             <div class="app-card" onclick="openFullscreen('https://edu-links12.vapor.my.cdn.cloudflare.net/')">
                 <img src="https://cdn.discordapp.com/icons/1339758993962307666/355f44f4d8c014283bbbc0a5ec475000.webp">
-                <h3>Prism proxy</h3>
+                <h3>Prism</h3>
             </div>
 
             <div class="app-card" onclick="openFullscreen('https://z.axsetubal.pt/')">
                 <img src="https://z.axsetubal.pt/logo.webp">
                 <h3>Z-kit</h3>
             </div>
-              <div class="app-card" onclick="openFullscreen('https://tennis.coaching2lead.com/')">
+
+            <div class="app-card" onclick="openFullscreen('https://tennis.coaching2lead.com/')">
                 <img src="https://styles.redditmedia.com/t5_9vvnjt/styles/communityIcon_ypv1871zsvyb1.png">
                 <h3>Interstellar</h3>
             </div>
-              <div class="app-card" onclick="openFullscreen('https://glintapp.org/')">
+
+            <div class="app-card" onclick="openFullscreen('https://glintapp.org/')">
                 <img src="https://glintapp.org/images/logo.png">
                 <h3>Glint</h3>
             </div>
-            </div>
         </div>
-    </div>
 
+    </div>
 </div>
 
 <footer>
