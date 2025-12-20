@@ -15,6 +15,38 @@ body {
     color: white;
 }
 
+/* ================= LOADING POPUP ================= */
+#loading-screen {
+    position: fixed;
+    inset: 0;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-box {
+    background-color: #000;
+    border: 2px solid #5a00e7;
+    padding: 30px 40px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 280px;
+}
+
+.loading-title {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #5a00e7;
+}
+
+#loading-text {
+    font-size: 16px;
+    opacity: 0.85;
+}
+
+/* ================= HEADER ================= */
 header {
     background-color: #000;
     padding: 20px 30px;
@@ -37,6 +69,7 @@ header button:hover {
     background-color: #000;
 }
 
+/* ================= SECTION ================= */
 .section-wrapper {
     position: relative;
     overflow: hidden;
@@ -49,7 +82,7 @@ header button:hover {
     position: relative;
 }
 
-/* PARTICLES (middle layer) */
+/* PARTICLES */
 .particle-overlay {
     position: absolute;
     inset: 0;
@@ -61,13 +94,12 @@ header button:hover {
     z-index: 2;
 }
 
-/* CONTENT (top layer) */
+/* CONTENT */
 .section-content {
     position: relative;
     z-index: 3;
 }
 
-/* TITLE SPACING */
 .section-content h2 {
     margin-bottom: 10px;
 }
@@ -82,7 +114,6 @@ header button:hover {
     border: none;
     font-size: 16px;
     outline: none;
-
     background-color: #000;
     color: white;
     text-align: center;
@@ -91,7 +122,6 @@ header button:hover {
 .search-bar::placeholder {
     color: white;
     opacity: 0.7;
-    text-align: center;
 }
 
 /* APP CARDS */
@@ -113,12 +143,14 @@ header button:hover {
     border-radius: 10px 10px 0 0;
 }
 
+/* FOOTER */
 footer {
     background-color: #000;
     text-align: center;
     padding: 20px 0;
 }
 
+/* FULLSCREEN IFRAME */
 iframe.fullscreen {
     position: fixed;
     inset: 0;
@@ -130,6 +162,31 @@ iframe.fullscreen {
 </style>
 
 <script>
+/* ================= RANDOM LOADING MESSAGE ================= */
+const loadingMessages = [
+    "Loading stuff...",
+    "Screw GoGuardian who ever made it NEEDS to be shot dead....",
+    "I HATE THOSE STUPID CLANKERS!!",
+    "Preparing opening... 🚀",
+    "Aija is the rich brother and their crackhead disowned sister is AIJA4GIRLS lol",
+    "3 2 1...",
+    "#noticing👀"
+    "Sybau liam...."
+];
+
+window.addEventListener("DOMContentLoaded", () => {
+    const randomMessage =
+        loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
+    document.getElementById("loading-text").textContent = randomMessage;
+});
+
+window.addEventListener("load", () => {
+    setTimeout(() => {
+        document.getElementById("loading-screen").style.display = "none";
+    }, 1200);
+});
+
+/* ================= APP FUNCTIONS ================= */
 function openFullscreen(url) {
     const iframe = document.createElement('iframe');
     iframe.src = url;
@@ -153,6 +210,14 @@ function filterCards() {
 
 <body>
 
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+    <div class="loading-box">
+        <div class="loading-title">AIja</div>
+        <div id="loading-text">Loading...</div>
+    </div>
+</div>
+
 <header>
     <button onclick="location.href='index.html'">Games</button>
     <button onclick="location.href='apps.html'">Apps</button>
@@ -161,10 +226,8 @@ function filterCards() {
 <div class="section-wrapper">
     <div class="section">
 
-        <!-- particles -->
         <div class="particle-overlay"></div>
 
-        <!-- content -->
         <div class="section-content">
             <h2>Apps</h2>
 
@@ -200,7 +263,6 @@ function filterCards() {
                 <img src="https://glintapp.org/images/logo.png">
                 <h3>Glint</h3>
             </div>
-
         </div>
     </div>
 </div>
