@@ -3,94 +3,94 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Khan Academy</title>
-<link rel="icon" href="https://img.icons8.com/color/452/khan-academy.png">
+<link rel="icon" href="https://img.icons8.com/color/452/khan-academy.png" type="image/x-icon">
 
 <style>
+/* ================= GLOBAL ================= */
 body {
-    margin: 0;
     font-family: Arial, sans-serif;
-    background: black;
+    margin: 0;
+    padding: 0;
+    background-color: #000;
     color: white;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 header {
-    background: black;
+    background-color: #000;
     padding: 20px 30px;
     display: flex;
     justify-content: flex-end;
 }
 
 header button {
-    background: #3d0078;
+    background-color: #3d0078;
     border: none;
     padding: 10px 20px;
     color: white;
     font-size: 18px;
-    border-radius: 5px;
     cursor: pointer;
+    border-radius: 5px;
     margin-left: 20px;
 }
 
 header button:hover {
-    background: #5a00e7;
+    background-color: #38008f;
 }
 
-/* PURPLE SECTION */
+/* ================= SECTION ================= */
 .section {
-    position: relative;
-    background: #5a00e7;
     padding: 40px;
     text-align: center;
-    overflow: hidden;
+    background-color: #38008f;
 }
 
-/* PARTICLE BACKGROUND */
-.particles {
-    position: absolute;
-    inset: 0;
-    background-image: url("https://media.giphy.com/media/pPQFClpVc7k6k/giphy.gif");
-    background-size: 300px 300px;
-    opacity: 0.4;
-    z-index: 1;
-    pointer-events: none;
-}
-
-/* CONTENT ABOVE PARTICLES */
-.content {
-    position: relative;
-    z-index: 2;
-}
-
-/* SEARCH BAR */
+/* ================= SEARCH BAR ================= */
 .search-bar {
+    display: block;
     width: 600px;
-    padding: 10px;
+    padding: 10px 15px;
+    margin: 20px auto 10px;
     border-radius: 10px;
     border: 2px solid #8000ff;
-    background: black;
+    background-color: #000;
     color: white;
     font-size: 16px;
-    margin: 20px auto;
-    display: block;
+    outline: none;
+    text-align: center;
 }
 
+.search-bar::placeholder {
+    color: white;
+    opacity: 0.7;
+}
+
+/* ================= NO RESULTS ================= */
 #no-results {
     display: none;
+    margin: 15px 0 30px;
     font-size: 20px;
-    margin-bottom: 20px;
+    opacity: 0.9;
 }
 
-/* GAME CARDS */
+/* ================= GAME GRID ================= */
+.games-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* ================= GAME CARDS ================= */
 .game-card {
-    display: inline-block;
     width: 200px;
     height: 250px;
-    background: black;
+    background-color: #000;
     margin: 15px;
     border-radius: 10px;
     cursor: pointer;
+    text-align: center;
 }
 
 .game-card img {
@@ -103,20 +103,21 @@ header button:hover {
     margin-top: 10px;
 }
 
-/* FULLSCREEN IFRAME */
+/* ================= FOOTER ================= */
+footer {
+    background-color: #000;
+    text-align: center;
+    padding: 20px 0;
+}
+
+/* ================= FULLSCREEN IFRAME ================= */
 iframe.fullscreen {
     position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
     border: none;
-    z-index: 9999;
-}
-
-footer {
-    background: black;
-    text-align: center;
-    padding: 20px;
+    z-index: 1000;
 }
 </style>
 
@@ -125,6 +126,7 @@ function openFullscreen(url) {
     const iframe = document.createElement("iframe");
     iframe.src = url;
     iframe.className = "fullscreen";
+    iframe.allowFullscreen = true;
     document.body.appendChild(iframe);
     iframe.onclick = () => iframe.remove();
 }
@@ -133,16 +135,19 @@ function filterGames() {
     const input = document.getElementById("searchInput").value.toLowerCase();
     const cards = document.getElementsByClassName("game-card");
     const noResults = document.getElementById("no-results");
+
     let found = false;
 
     for (let card of cards) {
-        if (card.innerText.toLowerCase().includes(input)) {
-            card.style.display = "inline-block";
+        const text = card.innerText.toLowerCase();
+        if (text.includes(input)) {
+            card.style.display = "block";
             found = true;
         } else {
             card.style.display = "none";
         }
     }
+
     noResults.style.display = found ? "none" : "block";
 }
 </script>
@@ -156,22 +161,20 @@ function filterGames() {
 </header>
 
 <div class="section">
-    <div class="particles"></div>
+    <h2>Games</h2>
 
-    <div class="content">
-        <h2>Aija Unblockedd S+</h2>
-        <h3>We are so back baby</h3>
+    <input
+        id="searchInput"
+        class="search-bar"
+        type="text"
+        placeholder="Search games..."
+        onkeyup="filterGames()"
+    >
 
-        <input
-            id="searchInput"
-            class="search-bar"
-            placeholder="Search games..."
-            onkeyup="filterGames()"
-        >
+    <div id="no-results">nothing found dude......</div>
 
-        <div id="no-results">nothing found dude......</div>
+    <div class="games-grid">
 
-        <!-- ALL ORIGINAL GAMES -->
         <div class="game-card" onclick="openFullscreen('https://krunker.io/')">
             <img src="https://krunker-io.io/krunker-io-icon.jpg">
             <h3>Krunker.io</h3>
@@ -204,17 +207,17 @@ function filterGames() {
 
         <div class="game-card" onclick="openFullscreen('https://playsonicgames.com/embed/sonic-2-heroes.html')">
             <img src="https://i.ytimg.com/vi/6l0yZTA_W84/maxresdefault.jpg">
-            <h3>Sonic 2 Heroes</h3>
+            <h3>Sonic 2 heroes</h3>
         </div>
 
         <div class="game-card" onclick="openFullscreen('https://playsonicgames.com/embed/sonic-winter-adventures.html')">
             <img src="https://tse4.mm.bing.net/th/id/OIP.JD8ZvkHEC5ZCMSU_NpjQjAHaHa">
-            <h3>Sonic Winter Adventures</h3>
+            <h3>Sonic winter adventures</h3>
         </div>
 
         <div class="game-card" onclick="openFullscreen('https://waves.lat/!!/https://cdn.jsdelivr.net/gh/gn-math/html@main/467-updatee.html')">
             <img src="https://i.ytimg.com/vi/L5vrz-fq9D0/maxresdefault.jpg">
-            <h3>Baldi's Basics Plus</h3>
+            <h3>Baldi's basic's plus</h3>
         </div>
 
         <div class="game-card" onclick="openFullscreen('https://space-waves.io/space-waves.embed')">
