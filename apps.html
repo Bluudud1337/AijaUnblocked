@@ -192,6 +192,7 @@ window.addEventListener("DOMContentLoaded", () => {
     popup.style.opacity = 0;
     popup.style.transform = "scale(0.8)";
     popup.style.pointerEvents = "none";
+    popup.style.display = "flex";
 
     // Fade in
     setTimeout(() => {
@@ -202,10 +203,15 @@ window.addEventListener("DOMContentLoaded", () => {
 
         // Stay visible for 3 seconds
         setTimeout(() => {
-            // Fade out
+            // Fade out completely
             popup.style.opacity = 0;
             popup.style.transform = "scale(0.8)";
             popup.style.pointerEvents = "none";
+
+            // Remove from display after fade
+            setTimeout(() => {
+                popup.style.display = "none";
+            }, 500); // matches transition time
         }, 3000);
 
     }, 100); // slight delay to ensure DOM is ready
