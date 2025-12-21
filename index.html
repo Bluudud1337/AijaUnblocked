@@ -11,12 +11,12 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #000000;
+            background-color: #000;
             color: white;
         }
 
         header {
-            background-color: #000000;
+            background-color: #000;
             color: white;
             padding: 20px 30px;
             display: flex;
@@ -45,6 +45,20 @@
             position: relative;
         }
 
+        /* PARTICLE BACKGROUND GIF */
+        .particle-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('PLACE URL HERE'); /* put your particle GIF URL here */
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 1; /* behind game cards */
+            opacity: 0.5;
+        }
+
         /* SEARCH BAR */
         .search-bar {
             display: block;
@@ -58,6 +72,8 @@
             font-size: 16px;
             outline: none;
             text-align: center;
+            position: relative;
+            z-index: 2; /* above particle background */
         }
 
         .search-bar::placeholder {
@@ -72,15 +88,70 @@
             font-size: 20px;
             color: white;
             opacity: 0.9;
+            position: relative;
+            z-index: 2;
         }
 
         .game-card {
             display: inline-block;
             width: 200px;
             height: 250px;
-            background-color: #000000;
+            background-color: #000;
             margin: 15px;
             border-radius: 10px;
             cursor: pointer;
             color: white;
             text-align: center;
+            position: relative;
+            z-index: 2; /* above particle background */
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 160px;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .game-card h3 {
+            margin-top: 10px;
+        }
+
+        footer {
+            background-color: #000;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        iframe.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 1000;
+        }
+    </style>
+
+    <script>
+        function openFullscreen(url) {
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.className = 'fullscreen';
+            iframe.setAttribute('allowfullscreen', '');
+            document.body.appendChild(iframe);
+            iframe.onclick = () => iframe.remove();
+        }
+
+        function filterGames() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const cards = document.getElementsByClassName("game-card");
+            const noResults = document.getElementById("no-results");
+
+            let found = false;
+
+            for (let card of cards) {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(input)) {
+                    card.style.display = "inline-block";
