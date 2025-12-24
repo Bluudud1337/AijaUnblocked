@@ -388,6 +388,10 @@ iframe.fullscreen {
         <div class="game-card" onclick="openFullscreen('https://67.ip.nowgg.lol/apps/a/19900/b.html')">
             <img src="https://img.icons8.com/ios11/1200/roblox.jpg">
             <h3>Roblox</h3>
+        </div>
+        <div class="game-card" onclick="openFullscreen('https://eaglercraftgame.github.io/go/minecraft-1.5.2/')">
+            <img src="https://styles.redditmedia.com/t5_60aj9d/styles/communityIcon_serayq82g91a1.jpg?format=pjpg&s=3262e0b1499369a43c9123d5610d8fbfa462062c">
+            <h3>EaglerCraft</h3>
             
         </div>
     </div> <!-- END GAMES CONTAINER -->
@@ -408,16 +412,17 @@ const popupMessages = [
     "Nerf TripWire dude please...",
     "and i know that you know, that you know, that you mine..",
     "SharkySab get a job..",
-    "Say sum dumb shit again max and see if i dont deglove you...",
+    "Maxwell, youve been DEGLOVED.",
     "Silver the fraudHog..",
     "Github sites take like 5 years to update if you edited the code and commited changes..",
+    "AstraNova you actual bop bro",
 ];
 
 window.onload = () => {
     const popup = document.getElementById("popup-message");
     popup.textContent = popupMessages[Math.floor(Math.random() * popupMessages.length)];
     popup.style.opacity = 1;
-    setTimeout(() => popup.style.opacity = 0, 2000); // disappear after 2s
+    setTimeout(() => popup.style.opacity = 0, 3000); // disappear after 3s
     updateGameCount();
 };
 
