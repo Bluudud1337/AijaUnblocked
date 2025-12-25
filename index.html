@@ -116,8 +116,8 @@ header button {
 /* GAME GRID */
 .games-container {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0px;
     justify-items: center;
 }
 
@@ -139,7 +139,7 @@ header button {
 }
 
 .game-card img {
-    width: 100%;
+    width: 160%;
     height: 160px;
     border-radius: 10px 10px 0 0;
 }
@@ -453,7 +453,7 @@ function filterGames() {
 /* COUNTER */
 function updateGameCount() {
     document.getElementById("game-counter").textContent =
-        document.querySelectorAll(".game-card").length + " Games";
+        document.querySelectorAll(".game-card").length + " Games currently..";
 }
 
 /* PARTICLES CONFIG */
