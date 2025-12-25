@@ -10,11 +10,17 @@
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
 <style>
+:root {
+    --accent-color: #5a00e7;
+    --background-color: #000;
+    --text-color: white;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: #000;
-    color: white;
+    background: var(--background-color);
+    color: var(--text-color);
     overflow-x: hidden;
 }
 
@@ -32,16 +38,16 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #000;
+    background-color: var(--background-color);
     font-size: 3em;
     font-weight: bold;
     opacity: 1;
     pointer-events: none;
     transition: opacity 1s ease;
     z-index: 9999;
-    -webkit-text-stroke: 2px #443dff;
-    color: #000;
-    text-shadow: 0 0 20px #8000ff;
+    -webkit-text-stroke: 2px var(--accent-color);
+    color: var(--background-color);
+    text-shadow: 0 0 20px var(--accent-color);
 }
 
 /* HEADER */
@@ -53,10 +59,10 @@ header {
 }
 
 header button {
-    background-color: var(--accent-color, #5a00e7);
+    background-color: var(--accent-color);
     border: none;
     padding: 10px 20px;
-    color: white;
+    color: var(--text-color);
     font-size: 18px;
     cursor: pointer;
     border-radius: 5px;
@@ -78,7 +84,7 @@ header button {
 #game-counter {
     font-size: 48px;
     font-weight: bold;
-    color: var(--accent-color, #5a00e7);
+    color: var(--accent-color);
     margin-bottom: 20px;
 }
 
@@ -88,9 +94,9 @@ header button {
     max-width: 90%;
     padding: 10px;
     border-radius: 10px;
-    border: 2px solid var(--accent-color, #8000ff);
-    background: #000;
-    color: white;
+    border: 2px solid var(--accent-color);
+    background: var(--background-color);
+    color: var(--text-color);
     text-align: center;
     margin-bottom: 30px;
 }
@@ -105,9 +111,9 @@ header button {
 .soft-icon {
     width: 64px;
     height: 64px;
-    background: #000;
+    background: var(--background-color);
     border-radius: 14px;
-    box-shadow: 0 0 20px var(--accent-color, #8000ff);
+    box-shadow: 0 0 20px var(--accent-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -131,10 +137,10 @@ header button {
     width: 100%;
     max-width: 200px;
     height: 250px;
-    background: #000;
+    background: var(--background-color);
     border-radius: 10px;
     cursor: pointer;
-    box-shadow: 0 0 10px var(--accent-color, #8000ff);
+    box-shadow: 0 0 10px var(--accent-color);
     transition: transform .2s;
     text-align: center;
 }
@@ -164,9 +170,9 @@ iframe.fullscreen {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: var(--accent-color, #5a00e7);
+    background: var(--accent-color);
     border: none;
-    color: white;
+    color: var(--text-color);
     font-size: 22px;
     width: 40px;
     height: 40px;
@@ -182,14 +188,14 @@ iframe.fullscreen {
     top: 20px;
     left: 20px;
     background: #111;
-    border: 2px solid var(--accent-color, #5a00e7);
+    border: 2px solid var(--accent-color);
     padding: 10px;
     border-radius: 10px;
     z-index: 1002;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    color: white;
+    color: var(--text-color);
 }
 
 #theme-changer input {
@@ -206,16 +212,10 @@ iframe.fullscreen {
     <button onclick="location.href='apps.html'">Apps</button>
     <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
     <button onclick="location.href='proxy.html'">blank launcher</button>
-      <!-- Theme changer GUI -->
+    <!-- Theme changer GUI -->
     <input type="color" id="colorPicker" title="Change Accent Color" style="margin-left:20px;">
     <button id="modeToggle">Toggle Dark/Light</button>
 </header>
-
-<!-- THEME CHANGER GUI -->
-<div id="theme-changer">
-    <label>Accent Color:</label>
-    <input type="color" id="accentColorInput" value="#5a00e7">
-</div>
 
 <div class="section">
     <h2>Popular Games</h2>
@@ -235,10 +235,8 @@ iframe.fullscreen {
 
     <button id="close-btn">X</button>
 
-    <!-- GAME GRID -->
     <div class="games-container">
-        <!-- ALL GAME CARDS RESTORED -->
-        <!-- Add all your game-card divs here like in your original code -->
+        <!-- Example game cards -->
         <div class="game-card" onclick="openFullscreen('https://krunker.io/')">
             <img src="https://krunker-io.io/krunker-io-icon.jpg">
             <h3>Krunker.io</h3>
@@ -251,6 +249,7 @@ iframe.fullscreen {
             <img src="https://media.pocketgamer.com/artwork/na-kcwl/image_jpeg_820.jpg">
             <h3>Slither.io</h3>
         </div>
+         </div>
         <div class="game-card" onclick="openFullscreen('https://shellshock.io/')">
             <img src="https://slopegame.io/upload/imgs/shell-shockers-logo.jpg">
             <h3>Shell Shockers</h3>
@@ -431,7 +430,7 @@ iframe.fullscreen {
             <img src="https://snow-rider3d.io/data/image/game/tap-road.jpg">
             <h3>Tap Road</h3>
 
-    </div> <!-- END GAMES CONTAINER -->
+    </div>
 </div>
 
 <footer style="text-align:center;padding:20px;">
@@ -455,16 +454,24 @@ const popupMessages = [
     "AstraNova you actual bop bro",
 ];
 
+/* ONLOAD */
 window.onload = () => {
+    const savedColor = localStorage.getItem('accentColor');
+    const savedMode = localStorage.getItem('mode');
+
+    if(savedColor) setAccentColor(savedColor);
+    if(savedMode) setMode(savedMode);
+
     const popup = document.getElementById("popup-message");
     popup.textContent = popupMessages[Math.floor(Math.random() * popupMessages.length)];
     popup.style.opacity = 1;
-    setTimeout(() => popup.style.opacity = 0, 3000); // disappear after 3s
+    setTimeout(() => popup.style.opacity = 0, 3000);
+
     updateGameCount();
 };
 
 /* FULLSCREEN */
-function openFullscreen(url) {
+function openFullscreen(url){
     const iframe = document.createElement("iframe");
     iframe.src = url;
     iframe.className = "fullscreen";
@@ -472,19 +479,14 @@ function openFullscreen(url) {
 
     const btn = document.getElementById("close-btn");
     btn.style.display = "block";
-    btn.onclick = () => {
-        iframe.remove();
-        btn.style.display = "none";
-    };
+    btn.onclick = () => { iframe.remove(); btn.style.display = "none"; };
 }
 
 /* SEARCH */
 function filterGames() {
     const input = searchInput.value.toLowerCase();
     document.querySelectorAll(".game-card").forEach(card => {
-        card.style.display = card.innerText.toLowerCase().includes(input)
-            ? "block"
-            : "none";
+        card.style.display = card.innerText.toLowerCase().includes(input) ? "block" : "none";
     });
 }
 
@@ -494,7 +496,7 @@ function updateGameCount() {
         document.querySelectorAll(".game-card").length + " Games currently..";
 }
 
-/* PARTICLES CONFIG */
+/* PARTICLES */
 particlesJS("particles-js", {
     particles: {
         number: { value: 80 },
@@ -504,13 +506,35 @@ particlesJS("particles-js", {
     }
 });
 
-/* THEME CHANGER FUNCTIONALITY */
-const accentInput = document.getElementById("accentColorInput");
-accentInput.addEventListener("input", (e) => {
-    const color = e.target.value;
-    document.documentElement.style.setProperty('--accent-color', color);
+/* THEME */
+const colorPicker = document.getElementById('colorPicker');
+colorPicker.addEventListener('input', e => {
+    setAccentColor(e.target.value);
+    localStorage.setItem('accentColor', e.target.value);
 });
-</script>
+function setAccentColor(color){
+    document.documentElement.style.setProperty('--accent-color', color);
+    colorPicker.value = color;
+}
 
+const modeToggle = document.getElementById('modeToggle');
+modeToggle.addEventListener('click', () => {
+    const currentMode = document.documentElement.getAttribute('data-mode') || 'dark';
+    const newMode = currentMode === 'dark' ? 'light' : 'dark';
+    setMode(newMode);
+    localStorage.setItem('mode', newMode);
+});
+function setMode(mode){
+    if(mode === 'dark'){
+        document.documentElement.setAttribute('data-mode','dark');
+        document.documentElement.style.setProperty('--background-color','#000');
+        document.documentElement.style.setProperty('--text-color','white');
+    }else{
+        document.documentElement.setAttribute('data-mode','light');
+        document.documentElement.style.setProperty('--background-color','white');
+        document.documentElement.style.setProperty('--text-color','black');
+    }
+}
+</script>
 </body>
 </html>
