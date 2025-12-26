@@ -3,154 +3,75 @@
 <head>
   <title>Home</title>
   <link rel="icon" href="https://img.icons8.com/color/452/khan-academy.png">
-
-  <style>
-    body {
-      background: #000;
-      color: white;
-      text-align: center;
-      font-family: Arial;
-    }
-
-    header {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    header button {
-      background: #111;
-      color: white;
-      border: 2px solid #5a00e7;
-      padding: 10px 16px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    header button:hover {
-      background: #1a1a1a;
-      transform: translateY(-2px);
-    }
-
-    /* BACK BUTTON */
-    #back-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: #000;
-      border: 2px solid #5a00e7;
-      color: #5a00e7;
-      font-size: 20px;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-    }
-
-    #back-btn:hover {
-      background: #111;
-      transform: scale(1.1);
-    }
-
-    input {
-      width: 300px;
-      padding: 10px;
-      background: #000;
-      color: white;
-      border: 2px solid #5a00e7;
-      border-radius: 6px;
-      text-align: center;
-    }
-
-    .go-btn {
-      margin-top: 15px;
-      background: #5a00e7;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 6px;
-    }
-
-    .go-btn:hover {
-      opacity: 0.85;
-    }
-  </style>
 </head>
 
-<body>
+<body style="background:#000;color:white;text-align:center;font-family:Arial">
 
-  <!-- BACK BUTTON -->
-  <button id="back-btn" onclick="goBack()">←</button>
+<header>
+  <button onclick="location.href='apps.html'">Apps</button>
+  <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
+  <button onclick="location.href='index.html'">games</button>
+</header>
 
-  <header>
-    <button onclick="location.href='apps.html'">Apps</button>
-    <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
-    <button onclick="location.href='index.html'">Games</button>
-  </header>
+<h1>blank launcher</h1>
 
-  <h1>blank launcher</h1>
+<input id="url" placeholder="https://example.com" style="width:300px">
+<br><br>
 
-  <input id="url" placeholder="https://example.com">
-  <br><br>
+<button onclick="openSite()">Go</button>
 
-  <button class="go-btn" onclick="openSite()">Go</button>
+<h2>
+  this doesnt open all sites btw, only sites that can be embedded.
+  if the site isnt embeddable, it will fail.
+</h2>
 
-  <h3>
-    this doesnt open all sites btw, only sites that can be embedded.
-    if the site isnt embeddable, you will just be sent to the actual site.
-  </h3>
+<script>
+function openSite() {
+  let url = document.getElementById("url").value.trim();
+  if (!url) return;
 
-  <h3>
-    to exit from the about blank launcher, just use the ← button.
-  </h3>
-
-  <script>
-  <script>
-  function openSite() {
-    let url = document.getElementById("url").value;
-    if (!url.startsWith("http")) url = "https://" + url;
-
-    // Open about:blank in a new tab
-    const newTab = window.open("about:blank", "_blank");
-
-    if (!newTab) return;
-
-    // Inject iframe into about:blank
-    newTab.document.open();
-    newTab.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>Loading...</title>
-        <style>
-          body {
-            margin: 0;
-            background: black;
-          }
-          iframe {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-          }
-        </style>
-      </head>
-      <body>
-        <iframe src="${url}" allowfullscreen></iframe>
-      </body>
-      </html>
-    `);
-    newTab.document.close();
+  if (!url.startsWith("http")) {
+    url = "https://" + url;
   }
 
-  function goBack() {
-    history.back(); // URL stays the same
-  }
+  // Step 1: Open new blank tab
+  const tab = window.open("", "_blank");
+  if (!tab) return;
+
+  // Step 2: Navigate it to about:blank
+  tab.document.write("");
+  tab.document.close();
+
+  // Step 3: Inject iframe
+  tab.document.open();
+  tab.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>about:blank</title>
+      <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+          background: black;
+          height: 100%;
+          overflow: hidden;
+        }
+        iframe {
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+      </style>
+    </head>
+    <body>
+      <iframe src="${url}" allowfullscreen></iframe>
+    </body>
+    </html>
+  `);
+  tab.document.close();
+}
 </script>
+
+</body>
+</html>
