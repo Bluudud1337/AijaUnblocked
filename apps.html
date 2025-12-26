@@ -79,7 +79,7 @@ header button:hover {
 .particle-overlay {
     position: absolute;
     inset: 0;
-    background-image: url("https://i.gifer.com/SFFd.gif");
+    background-image: url("https://media.giphy.com/media/xUOxficoMEPD6BPZII/giphy.gif");
     background-repeat: repeat;
     background-size: 300px 300px;
     opacity: 1;
@@ -253,6 +253,7 @@ function filterCards() {
 <header>
     <button onclick="location.href='index.html'">Games</button>
     <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
+    <button onclick="location.href='proxy.html'">blank launcher</button>
 </header>
 
 <!-- CLOSE BUTTON FOR IFRAME -->
@@ -262,13 +263,13 @@ function filterCards() {
     <div class="section">
         <div class="particle-overlay"></div>
         <div class="section-content">
-            <h2>Apps</h2>
+            <h2>Applications</h2>
 
             <input
                 type="text"
                 id="searchInput"
                 class="search-bar"
-                placeholder="Search apps..."
+                placeholder="Search through apps..."
                 onkeyup="filterCards()"
             >
 
@@ -446,6 +447,16 @@ function filterCards() {
             <div class="app-card" onclick="openFullscreen('https://t9os.vercel.app/class.html')">
                 <img src="https://t9os.vercel.app/newlogo.png">
                 <h3>T9 OS</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://lunaar.shxrk.dev/')">
+                <img src="https://lunaar.org/media/logo.svg">
+                <h3>Lunaar</h3>
+            </div>
+
+            <div class="app-card" onclick="openFullscreen('https://brightenglish.flightbooker.co.za/')">
+                <img src="https://brightenglish.flightbooker.co.za/favicon.ico">
+                <h3>Shadow</h3>
 
             </div>
 
