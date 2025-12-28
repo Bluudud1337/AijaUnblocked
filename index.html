@@ -6,8 +6,6 @@
 <title>Khan Academy</title>
 <link rel="icon" href="https://img.icons8.com/color/452/khan-academy.png">
 
-    
-<!-- PARTICLE LIBRARY -->
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
 <style>
@@ -25,37 +23,67 @@ body {
     overflow-x: hidden;
 }
 
-/* PARTICLE BACKGROUND */
+/* PARTICLES */
 #particles-js {
     position: fixed;
     inset: 0;
     z-index: -1;
 }
 
-/* POPUP */
-#popup-message {
+/* ================= PROFILE SYSTEM ================= */
+#profileBtn {
+    background: #111;
+    border: 2px solid var(--accent-color);
+    color: var(--text-color);
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#profileOverlay {
     position: fixed;
     inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    align-items: flex-end;
+    z-index: 3000;
+}
+
+#profilePanel {
+    width: 100%;
+    max-height: 80%;
+    background: var(--background-color);
+    border-top: 3px solid var(--accent-color);
+    padding: 25px;
+    animation: slideUpProfile .3s ease-out;
+}
+
+@keyframes slideUpProfile {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+#profilePanel input,
+#profilePanel textarea {
+    width: 100%;
+    margin: 8px 0 16px;
+    padding: 10px;
+    background: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 6px;
+}
+
+.profile-actions {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--background-color);
-    font-size: 3em;
-    font-weight: bold;
-    opacity: 1;
-    pointer-events: none;
-    transition: opacity 1s ease;
-    z-index: 9999;
-    -webkit-text-stroke: 2px var(--accent-color);
-    color: var(--background-color);
-    text-shadow: 0 0 20px var(--accent-color);
+    gap: 10px;
 }
 
 /* HEADER */
 header {
     padding: 20px 30px;
     display: flex;
-    justify-content: flex-end;
+    align-items: center;
     gap: 20px;
 }
 
@@ -73,56 +101,6 @@ header button {
 .section {
     padding: 40px;
     text-align: center;
-}
-
-/* SECTION TITLE */
-.section h2 {
-    font-size: 2em;
-    margin-bottom: 10px;
-}
-
-/* GAME COUNTER */
-#game-counter {
-    font-size: 48px;
-    font-weight: bold;
-    color: var(--accent-color);
-    margin-bottom: 20px;
-}
-
-/* SEARCH */
-.search-bar {
-    width: 600px;
-    max-width: 90%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 2px solid var(--accent-color);
-    background: var(--background-color);
-    color: var(--text-color);
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-/* ICON */
-.icon-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-}
-
-.soft-icon {
-    width: 64px;
-    height: 64px;
-    background: var(--background-color);
-    border-radius: 14px;
-    box-shadow: 0 0 20px var(--accent-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: .2s;
-}
-
-.soft-icon:hover {
-    transform: scale(1.1);
 }
 
 /* GAME GRID */
@@ -156,90 +134,66 @@ header button {
     border-radius: 10px 10px 0 0;
 }
 
-/* FULLSCREEN GAME */
-iframe.fullscreen {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    z-index: 1000;
-}
-
-/* CLOSE BUTTON */
-#close-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: var(--accent-color);
-    border: none;
-    color: var(--text-color);
-    font-size: 22px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: none;
-    z-index: 1001;
-    cursor: pointer;
-}
-
-/* THEME CHANGER */
-#theme-changer {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: #111;
-    border: 2px solid var(--accent-color);
+/* SEARCH */
+.search-bar {
+    width: 600px;
+    max-width: 90%;
     padding: 10px;
     border-radius: 10px;
-    z-index: 1002;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    border: 2px solid var(--accent-color);
+    background: var(--background-color);
     color: var(--text-color);
-}
-
-#theme-changer input {
-    width: 100px;
+    text-align: center;
+    margin-bottom: 30px;
 }
 </style>
 </head>
 
 <body>
+
 <div id="particles-js"></div>
-<div id="popup-message"></div>
+
+<!-- ================= PROFILE POPUP ================= -->
+<div id="profileOverlay">
+    <div id="profilePanel">
+        <h2>Your Profile</h2>
+
+        <label>Username</label>
+        <input id="profileName">
+
+        <label>Email</label>
+        <input id="profileEmail">
+
+        <label>Favorite Games</label>
+        <textarea id="profileGames"></textarea>
+
+        <div class="profile-actions">
+            <button onclick="saveProfile()">Save</button>
+            <button onclick="closeProfile()">Close</button>
+        </div>
+    </div>
+</div>
 
 <header>
-    <button onclick="location.href='apps.html'">Apps</button>
-    <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
-    <button onclick="location.href='proxy.html'">blank launcher</button>
-    <!-- Theme changer GUI -->
-    <input type="color" id="colorPicker" title="Change Accent Color" style="margin-left:20px;">
-    <button id="modeToggle">Toggle Dark/Light</button>
+    <button id="profileBtn">Profile</button>
+
+    <div style="margin-left:auto; display:flex; gap:20px;">
+        <button onclick="location.href='apps.html'">Apps</button>
+        <button onclick="location.href='ProxyLinks.html'">Proxy Links</button>
+        <button onclick="location.href='proxy.html'">blank launcher</button>
+        <input type="color" id="colorPicker">
+        <button id="modeToggle">Toggle Dark/Light</button>
+    </div>
 </header>
 
-    
 <div class="section">
     <h2>Popular Games</h2>
-    <h3>"welcome, to aija unblocked."</h3>
-    <a href="https://forms.gle/igLeuHnR8D1yezm17" target="_blank" class="link-box">Click here to Suggest a game</a>
-
-    <div id="game-counter">0 Games</div>
+    <h3 id="welcomeText">welcome, to aija unblocked.</h3>
 
     <input id="searchInput" class="search-bar" placeholder="Search games..." onkeyup="filterGames()">
 
-    <div class="icon-wrapper">
-        <a href="https://discord.gg/9CucEhZfYj" target="_blank">
-            <div class="soft-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" width="40">
-            </div>
-        </a>
-    </div>
-
-    <button id="close-btn">X</button>
-
     <div class="games-container">
-        <!-- Example game cards -->
+
         <div class="game-card" onclick="openFullscreen('https://krunker.io/')">
             <img src="https://krunker-io.io/krunker-io-icon.jpg">
             <h3>Krunker.io</h3>
@@ -499,7 +453,7 @@ iframe.fullscreen {
         <div class="game-card" onclick="openFullscreen('https://infinitecraftnew.com/infinite-craft/')">
             <img src="https://tse1.mm.bing.net/th/id/OIP.KoctmhK3esztcugH73hmnQHaEK?rs=1&pid=ImgDetMain&o=7&rm=3">
             <h3>Infinite Craft</h3>
-            
+
     </div>
 </div>
 
@@ -508,50 +462,17 @@ iframe.fullscreen {
 </footer>
 
 <script>
-/* POPUP */
-const popupMessages = [
-    "Welcome to Aija unblocked.",
-    "join our discord!",
-    "Loading...",
-    "why is the sites code ALWAYS breaking??",
-    "Dev team NOWHERE to be seen...",
-    "Nerf TripWire dude please...",
-    "and i know that you know, that you know, that you mine..",
-    "SharkySab get a job..",
-    "Maxwell, youve been DEGLOVED.",
-    "Silver the fraudHog..",
-    "Github sites take like 5 years to update if you edited the code and commited changes..",
-    "AstraNova you actual bop bro",
-    "Alot of genuine effort and love has been put into this project, thanks for playing.. ",
-    "3,2,1..",
-];
-
-/* ONLOAD */
-window.onload = () => {
-    const savedColor = localStorage.getItem('accentColor');
-    const savedMode = localStorage.getItem('mode');
-
-    if(savedColor) setAccentColor(savedColor);
-    if(savedMode) setMode(savedMode);
-
-    const popup = document.getElementById("popup-message");
-    popup.textContent = popupMessages[Math.floor(Math.random() * popupMessages.length)];
-    popup.style.opacity = 1;
-    setTimeout(() => popup.style.opacity = 0, 3000);
-
-    updateGameCount();
-};
-
 /* FULLSCREEN */
 function openFullscreen(url){
     const iframe = document.createElement("iframe");
     iframe.src = url;
-    iframe.className = "fullscreen";
+    iframe.style.position = "fixed";
+    iframe.style.inset = "0";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "none";
+    iframe.style.zIndex = "2000";
     document.body.appendChild(iframe);
-
-    const btn = document.getElementById("close-btn");
-    btn.style.display = "block";
-    btn.onclick = () => { iframe.remove(); btn.style.display = "none"; };
 }
 
 /* SEARCH */
@@ -562,11 +483,48 @@ function filterGames() {
     });
 }
 
-/* COUNTER */
-function updateGameCount() {
-    document.getElementById("game-counter").textContent =
-        document.querySelectorAll(".game-card").length + " Games currently..";
+/* ================= PROFILE LOGIC ================= */
+const profileBtn = document.getElementById("profileBtn");
+const profileOverlay = document.getElementById("profileOverlay");
+
+profileBtn.onclick = () => {
+    profileOverlay.style.display = "flex";
+    loadProfile();
+};
+
+function closeProfile() {
+    profileOverlay.style.display = "none";
 }
+
+function saveProfile() {
+    const profile = {
+        name: profileName.value,
+        email: profileEmail.value,
+        games: profileGames.value
+    };
+    localStorage.setItem("userProfile", JSON.stringify(profile));
+    updateWelcome();
+    closeProfile();
+}
+
+function loadProfile() {
+    const saved = localStorage.getItem("userProfile");
+    if (!saved) return;
+    const p = JSON.parse(saved);
+    profileName.value = p.name || "";
+    profileEmail.value = p.email || "";
+    profileGames.value = p.games || "";
+}
+
+function updateWelcome() {
+    const p = JSON.parse(localStorage.getItem("userProfile") || "{}");
+    if (p.name) {
+        document.getElementById("welcomeText").textContent =
+            `Welcome back, ${p.name}.`;
+    }
+}
+
+updateWelcome();
 
 /* PARTICLES */
 particlesJS("particles-js", {
@@ -577,36 +535,7 @@ particlesJS("particles-js", {
         move: { speed: 1 }
     }
 });
-
-/* THEME */
-const colorPicker = document.getElementById('colorPicker');
-colorPicker.addEventListener('input', e => {
-    setAccentColor(e.target.value);
-    localStorage.setItem('accentColor', e.target.value);
-});
-function setAccentColor(color){
-    document.documentElement.style.setProperty('--accent-color', color);
-    colorPicker.value = color;
-}
-
-const modeToggle = document.getElementById('modeToggle');
-modeToggle.addEventListener('click', () => {
-    const currentMode = document.documentElement.getAttribute('data-mode') || 'dark';
-    const newMode = currentMode === 'dark' ? 'light' : 'dark';
-    setMode(newMode);
-    localStorage.setItem('mode', newMode);
-});
-function setMode(mode){
-    if(mode === 'dark'){
-        document.documentElement.setAttribute('data-mode','dark');
-        document.documentElement.style.setProperty('--background-color','#000');
-        document.documentElement.style.setProperty('--text-color','white');
-    }else{
-        document.documentElement.setAttribute('data-mode','light');
-        document.documentElement.style.setProperty('--background-color','white');
-        document.documentElement.style.setProperty('--text-color','black');
-    }
-}
 </script>
+
 </body>
 </html>
