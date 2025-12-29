@@ -204,6 +204,8 @@ iframe.fullscreen {
 }
 </style>
 </head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5a00e7">
 
 <body>
 <div id="particles-js"></div>
@@ -700,6 +702,9 @@ particlesJS("particles-js", {
     }
 });
 </script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
 
 </body>
 </html>
