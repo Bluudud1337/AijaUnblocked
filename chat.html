@@ -1,15 +1,15 @@
 <!-- FULLSCREEN CHATROOM WITH PARTICLES -->
 <div id="particles-js" style="position:fixed;inset:0;z-index:0;"></div>
 
-<div id="fullscreenChat" style="position:fixed;inset:0;display:flex;flex-direction:column;z-index:1;">
+<div id="fullscreenChat" style="position:fixed;inset:0;display:flex;flex-direction:column;z-index:1;background:var(--background-color);color:var(--text-color);">
     <!-- IMAGE PLACEHOLDER -->
     <div style="text-align:center;padding:10px;">
         <img id="chatTopImage" src="icon.png" alt="Chat Image" style="max-width:150px;max-height:150px;border-radius:10px;">
     </div>
 
     <!-- HEADER -->
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:2px solid var(--accent-color);backdrop-filter: blur(10px);background:rgba(0,0,0,0.5);">
-        <div style="font-weight:bold;font-size:18px;color:var(--text-color)">AijaChat</div>
+    <div id="chatHeader" style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:2px solid var(--accent-color);backdrop-filter: blur(10px);">
+        <div style="font-weight:bold;font-size:18px;">AijaChat</div>
         <div>
             <input type="color" id="chatColorPicker" title="Accent Color" style="margin-right:10px;">
             <button id="chatModeToggle">Toggle Dark/Light</button>
@@ -17,11 +17,11 @@
     </div>
 
     <!-- MESSAGES -->
-    <div id="chatMessages" style="flex:1;padding:10px;overflow-y:auto;font-size:16px;color:var(--text-color);backdrop-filter: blur(5px);background:rgba(0,0,0,0.2);border-radius:10px;margin:10px 20px;"></div>
+    <div id="chatMessages" style="flex:1;padding:10px;overflow-y:auto;font-size:16px;border-radius:10px;margin:10px 20px;"></div>
 
     <!-- INPUT -->
-    <div style="border-top:2px solid var(--accent-color);display:flex;backdrop-filter: blur(5px);background:rgba(0,0,0,0.3);margin:0 20px;border-radius:10px;">
-        <input id="chatInput" placeholder="Type a message..." style="flex:1;padding:10px;font-size:16px;border:none;background:transparent;color:var(--text-color);outline:none;">
+    <div id="chatInputContainer" style="border-top:2px solid var(--accent-color);display:flex;border-radius:10px;margin:0 20px;">
+        <input id="chatInput" placeholder="Type a message..." style="flex:1;padding:10px;font-size:16px;border:none;background:transparent;outline:none;">
     </div>
 </div>
 
@@ -77,12 +77,12 @@ if(!username){
 }
 
 /* ==== MODERATION ==== */
-const badWords = ["bitch","faggot","nigga","nigger","fuck"]; // add your blocked words here
+const badWords = ["bitch","faggot","nigga","nigger","fuck"];
 function cleanMessage(msg){
     let clean = msg;
     badWords.forEach(word => {
         const regex = new RegExp(word,"gi");
-        clean = clean.replace(regex,"*bad word*");
+        clean = clean.replace(regex,"*Bad Word*");
     });
     return clean;
 }
@@ -126,7 +126,10 @@ colorPicker.addEventListener('input', e => {
 
 // Load saved accent color
 const savedColor = localStorage.getItem('chatAccentColor');
-if(savedColor) colorPicker.value = savedColor, document.documentElement.style.setProperty('--accent-color', savedColor);
+if(savedColor){
+    colorPicker.value = savedColor;
+    document.documentElement.style.setProperty('--accent-color', savedColor);
+}
 
 // Dark/Light mode toggle
 const modeToggle = document.getElementById("chatModeToggle");
@@ -142,27 +145,23 @@ function setMode(mode){
         document.documentElement.setAttribute('data-mode','dark');
         document.documentElement.style.setProperty('--background-color','#000');
         document.documentElement.style.setProperty('--text-color','white');
+        document.getElementById("fullscreenChat").style.background = "rgba(0,0,0,0.8)";
+        chatMessagesDiv.style.background = "rgba(0,0,0,0.3)";
+        document.getElementById("chatHeader").style.background = "rgba(0,0,0,0.5)";
+        document.getElementById("chatInputContainer").style.background = "rgba(0,0,0,0.3)";
     }else{
         document.documentElement.setAttribute('data-mode','light');
         document.documentElement.style.setProperty('--background-color','white');
         document.documentElement.style.setProperty('--text-color','#000');
+        document.getElementById("fullscreenChat").style.background = "rgba(255,255,255,0.9)";
+        chatMessagesDiv.style.background = "rgba(255,255,255,0.6)";
+        document.getElementById("chatHeader").style.background = "rgba(255,255,255,0.7)";
+        document.getElementById("chatInputContainer").style.background = "rgba(255,255,255,0.6)";
     }
 }
 
 // Load saved mode
 const savedMode = localStorage.getItem('chatMode');
 if(savedMode) setMode(savedMode);
-
-/* ==== THEME UPDATE FOR CHATROOM ==== */
-function updateChatTheme(){
-    const bg = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
-    const text = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-    chatMessagesDiv.style.background = "rgba(0,0,0,0.2)";
-    chatMessagesDiv.style.color = text;
-    chatInput.style.background = "transparent";
-    chatInput.style.color = text;
-}
-updateChatTheme();
-const observer = new MutationObserver(updateChatTheme);
-observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style','data-mode'] });
 </script>
+
