@@ -1,71 +1,75 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>AijaChat</title>
-  <style>
-    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
-    #chat { max-width: 500px; margin: auto; }
-    #messages { list-style: none; padding: 0; max-height: 300px; overflow-y: scroll; border: 1px solid #ccc; background: white; }
-    #messages li { padding: 5px 10px; }
-    #messageForm { display: flex; margin-top: 10px; }
-    #msgInput { flex: 1; padding: 10px; }
-    #sendBtn { padding: 10px; }
-  </style>
-</head>
-<body>
-  <div id="chat">
-    <ul id="messages"></ul>
-    <form id="messageForm">
-      <input id="msgInput" placeholder="Type a message..." autocomplete="off" />
-      <button type="submit" id="sendBtn">Send</button>
-    </form>
-  </div>
+<!-- CHATROOM -->
+<div id="chatroom" style="position:fixed;bottom:20px;right:20px;width:300px;height:400px;background:var(--background-color);border:2px solid var(--accent-color);border-radius:10px;display:flex;flex-direction:column;z-index:1003;">
+    <div style="background:var(--accent-color);color:var(--text-color);padding:5px;text-align:center;font-weight:bold;">Aija Chat Room</div>
+    <div id="chatMessages" style="flex:1;padding:5px;overflow-y:auto;font-size:14px;"></div>
+    <input id="chatInput" placeholder="Type a message..." style="border:none;border-top:2px solid var(--accent-color);padding:5px;font-size:14px;color:var(--text-color);background:var(--background-color);outline:none;">
+</div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>
+/* ==== USERNAME ==== */
+let username = localStorage.getItem("chatUsername");
+if(!username){
+    username = prompt("Enter a username (no bad words!):") || "Guest";
+    localStorage.setItem("chatUsername", username);
+}
 
-  <script>
-    // 1️⃣ Your Firebase config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // 2️⃣ Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    const msgForm = document.getElementById("messageForm");
-    const msgInput = document.getElementById("msgInput");
-    const messages = document.getElementById("messages");
-
-    // Send message
-    msgForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      if (msgInput.value.trim() !== "") {
-        db.ref("messages").push().set({
-          text: msgInput.value,
-          timestamp: Date.now()
-        });
-        msgInput.value = "";
-      }
+/* ==== MODERATION ==== */
+const badWords = ["fuck","nigga","nigger","bitch","faggot"]; // replace with words you want to filter
+function cleanMessage(msg){
+    let clean = msg;
+    badWords.forEach(word => {
+        const regex = new RegExp(word,"gi");
+        clean = clean.replace(regex,"***");
     });
+    return clean;
+}
 
-    // Listen for new messages
-    db.ref("messages").on("child_added", (snapshot) => {
-      const msg = snapshot.val();
-      const li = document.createElement("li");
-      const time = new Date(msg.timestamp).toLocaleTimeString();
-      li.textContent = `[${time}] ${msg.text}`;
-      messages.appendChild(li);
-      messages.scrollTop = messages.scrollHeight;
+/* ==== LOAD / SAVE MESSAGES ==== */
+let chatMessagesArray = JSON.parse(localStorage.getItem("chatMessages")) || [];
+
+/* ==== RENDER MESSAGES ==== */
+const chatMessagesDiv = document.getElementById("chatMessages");
+function renderMessages(){
+    chatMessagesDiv.innerHTML = "";
+    chatMessagesArray.forEach(m => {
+        const div = document.createElement("div");
+        div.innerHTML = `<strong style="color:var(--accent-color)">${m.username}</strong> [${m.time}]: ${m.message}`;
+        chatMessagesDiv.appendChild(div);
     });
-  </script>
-</body>
-</html>
+    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+}
+
+/* ==== SEND MESSAGE ==== */
+const chatInput = document.getElementById("chatInput");
+chatInput.addEventListener("keydown", e => {
+    if(e.key === "Enter" && chatInput.value.trim() !== ""){
+        const msg = cleanMessage(chatInput.value.trim());
+        const time = new Date().toLocaleTimeString();
+        const messageObj = {username, message: msg, time};
+        chatMessagesArray.push(messageObj);
+
+        // Save to localStorage
+        localStorage.setItem("chatMessages", JSON.stringify(chatMessagesArray));
+
+        renderMessages();
+        chatInput.value = "";
+    }
+});
+
+/* ==== INITIAL RENDER ==== */
+renderMessages();
+
+/* ==== THEME INTEGRATION ==== */
+function updateChatTheme(){
+    document.getElementById("chatroom").style.background = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
+    document.getElementById("chatroom").style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+    chatInput.style.background = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
+    chatInput.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+}
+updateChatTheme();
+
+/* Update chat theme when accent color or mode changes */
+const observer = new MutationObserver(updateChatTheme);
+observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style','data-mode'] });
+</script>
+
