@@ -1,8 +1,26 @@
-<!-- CHATROOM -->
-<div id="chatroom" style="position:fixed;bottom:20px;right:20px;width:300px;height:400px;background:var(--background-color);border:2px solid var(--accent-color);border-radius:10px;display:flex;flex-direction:column;z-index:1003;">
-    <div style="background:var(--accent-color);color:var(--text-color);padding:5px;text-align:center;font-weight:bold;">Aija Chat Room</div>
-    <div id="chatMessages" style="flex:1;padding:5px;overflow-y:auto;font-size:14px;"></div>
-    <input id="chatInput" placeholder="Type a message..." style="border:none;border-top:2px solid var(--accent-color);padding:5px;font-size:14px;color:var(--text-color);background:var(--background-color);outline:none;">
+<!-- FULLSCREEN CHATROOM -->
+<div id="fullscreenChat" style="position:fixed;inset:0;background:var(--background-color);color:var(--text-color);display:flex;flex-direction:column;z-index:1000;">
+    <!-- IMAGE PLACEHOLDER -->
+    <div style="text-align:center;padding:10px;">
+        <img id="chatTopImage" src="icon.png" alt="Chat Image" style="max-width:150px;max-height:150px;border-radius:10px;">
+    </div>
+
+    <!-- HEADER -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:2px solid var(--accent-color);">
+        <div style="font-weight:bold;font-size:18px;">AijaChat</div>
+        <div>
+            <input type="color" id="chatColorPicker" title="Accent Color" style="margin-right:10px;">
+            <button id="chatModeToggle">Toggle Dark/Light</button>
+        </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div id="chatMessages" style="flex:1;padding:10px;overflow-y:auto;font-size:16px;"></div>
+
+    <!-- INPUT -->
+    <div style="border-top:2px solid var(--accent-color);display:flex;">
+        <input id="chatInput" placeholder="Type a message..." style="flex:1;padding:10px;font-size:16px;border:none;background:var(--background-color);color:var(--text-color);outline:none;">
+    </div>
 </div>
 
 <script>
@@ -14,7 +32,7 @@ if(!username){
 }
 
 /* ==== MODERATION ==== */
-const badWords = ["fuck","nigga","nigger","bitch","faggot"]; // replace with words you want to filter
+const badWords = ["badword1","badword2","badword3"];
 function cleanMessage(msg){
     let clean = msg;
     badWords.forEach(word => {
@@ -38,6 +56,7 @@ function renderMessages(){
     });
     chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
 }
+renderMessages();
 
 /* ==== SEND MESSAGE ==== */
 const chatInput = document.getElementById("chatInput");
@@ -47,28 +66,58 @@ chatInput.addEventListener("keydown", e => {
         const time = new Date().toLocaleTimeString();
         const messageObj = {username, message: msg, time};
         chatMessagesArray.push(messageObj);
-
-        // Save to localStorage
         localStorage.setItem("chatMessages", JSON.stringify(chatMessagesArray));
-
         renderMessages();
         chatInput.value = "";
     }
 });
 
-/* ==== INITIAL RENDER ==== */
-renderMessages();
+/* ==== THEME ==== */
+const colorPicker = document.getElementById("chatColorPicker");
+colorPicker.addEventListener('input', e => {
+    document.documentElement.style.setProperty('--accent-color', e.target.value);
+    localStorage.setItem('chatAccentColor', e.target.value);
+});
 
-/* ==== THEME INTEGRATION ==== */
+// Load saved accent color
+const savedColor = localStorage.getItem('chatAccentColor');
+if(savedColor) colorPicker.value = savedColor, document.documentElement.style.setProperty('--accent-color', savedColor);
+
+// Dark/Light mode toggle
+const modeToggle = document.getElementById("chatModeToggle");
+modeToggle.addEventListener("click", () => {
+    const currentMode = document.documentElement.getAttribute('data-mode') || 'dark';
+    const newMode = currentMode === 'dark' ? 'light' : 'dark';
+    setMode(newMode);
+    localStorage.setItem('chatMode', newMode);
+});
+
+function setMode(mode){
+    if(mode === 'dark'){
+        document.documentElement.setAttribute('data-mode','dark');
+        document.documentElement.style.setProperty('--background-color','#000');
+        document.documentElement.style.setProperty('--text-color','white');
+    }else{
+        document.documentElement.setAttribute('data-mode','light');
+        document.documentElement.style.setProperty('--background-color','white');
+        document.documentElement.style.setProperty('--text-color','#000');
+    }
+}
+
+// Load saved mode
+const savedMode = localStorage.getItem('chatMode');
+if(savedMode) setMode(savedMode);
+
+/* ==== THEME UPDATE FOR CHATROOM ==== */
 function updateChatTheme(){
-    document.getElementById("chatroom").style.background = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
-    document.getElementById("chatroom").style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
-    chatInput.style.background = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
-    chatInput.style.color = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--background-color');
+    const text = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+    document.getElementById("fullscreenChat").style.background = bg;
+    document.getElementById("fullscreenChat").style.color = text;
+    chatInput.style.background = bg;
+    chatInput.style.color = text;
 }
 updateChatTheme();
-
-/* Update chat theme when accent color or mode changes */
 const observer = new MutationObserver(updateChatTheme);
 observer.observe(document.documentElement, { attributes: true, attributeFilter: ['style','data-mode'] });
 </script>
