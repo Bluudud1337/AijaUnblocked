@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AijaChat</title>
+  <style>
+    body { font-family: Arial; background: #f2f2f2; padding: 20px; }
+    #chat { max-width: 500px; margin: auto; }
+    #messages { list-style: none; padding: 0; max-height: 300px; overflow-y: scroll; border: 1px solid #ccc; background: white; }
+    #messages li { padding: 5px 10px; }
+    #messageForm { display: flex; margin-top: 10px; }
+    #msgInput { flex: 1; padding: 10px; }
+    #sendBtn { padding: 10px; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <ul id="messages"></ul>
+    <form id="messageForm">
+      <input id="msgInput" placeholder="Type a message..." autocomplete="off" />
+      <button type="submit" id="sendBtn">Send</button>
+    </form>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+  <script>
+    // 1️⃣ Your Firebase config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // 2️⃣ Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const msgForm = document.getElementById("messageForm");
+    const msgInput = document.getElementById("msgInput");
+    const messages = document.getElementById("messages");
+
+    // Send message
+    msgForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (msgInput.value.trim() !== "") {
+        db.ref("messages").push().set({
+          text: msgInput.value,
+          timestamp: Date.now()
+        });
+        msgInput.value = "";
+      }
+    });
+
+    // Listen for new messages
+    db.ref("messages").on("child_added", (snapshot) => {
+      const msg = snapshot.val();
+      const li = document.createElement("li");
+      const time = new Date(msg.timestamp).toLocaleTimeString();
+      li.textContent = `[${time}] ${msg.text}`;
+      messages.appendChild(li);
+      messages.scrollTop = messages.scrollHeight;
+    });
+  </script>
+</body>
+</html>
