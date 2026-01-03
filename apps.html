@@ -244,6 +244,12 @@ function filterCards() {
         card.style.display = text.includes(input) ? "inline-block" : "none";
     }
 }
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
+
 </script>
 </head>
 
