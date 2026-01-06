@@ -175,10 +175,11 @@ iframe.fullscreen {
 
 <script>
 <script>
+<script>
 /* ================= RANDOM FULLSCREEN POPUP MESSAGE ================= */
 const popupMessages = [
     "HA,HA, ONE!",
-    "Check out the apps below!",
+    "Check out the apps below!"
     "GPT Common W🥹✌️❤️‍🩹",
     "Do stuff pal.",
     "Ready or not, here i COME!"
@@ -202,46 +203,45 @@ const popupMessages = [
     "This site is a new years gift btw...🎆",
 ];
 
-const fonts = ["Arial", "Verdana", "Georgia", "Courier New", "Comic Sans MS", "Impact", "Tahoma"];
+const fonts = ["Arial", "Verdana", "Georgia"];
 
 window.addEventListener("DOMContentLoaded", () => {
-    const popup = document.getElementById("popup-message");
-    if (!popup) return;
-
-    popup.textContent = popupMessages[Math.floor(Math.random() * popupMessages.length)];
-    popup.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-    popup.style.opacity = 1;
-
-    setTimeout(() => popup.style.opacity = 0, 3000);
+  const popup = document.getElementById("popup-message");
+  popup.textContent = popupMessages[Math.floor(Math.random() * popupMessages.length)];
+  popup.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+  popup.style.opacity = 1;
+  setTimeout(() => popup.style.opacity = 0, 3000);
 });
 
-/* ================= APP FUNCTIONS ================= */
 function openFullscreen(url) {
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframe.className = "fullscreen";
-    iframe.allowFullscreen = true;
+  const iframe = document.createElement("iframe");
+  iframe.src = url;
+  iframe.className = "fullscreen";
+  iframe.allowFullscreen = true;
 
-    document.body.appendChild(iframe);
+  document.body.appendChild(iframe);
 
-    const closeBtn = document.getElementById("close-btn");
-    closeBtn.style.display = "block";
+  const closeBtn = document.getElementById("close-btn");
+  closeBtn.style.display = "block";
 
-    closeBtn.onclick = () => {
-        iframe.remove();
-        closeBtn.style.display = "none";
-    };
+  closeBtn.onclick = () => {
+    iframe.remove();
+    closeBtn.style.display = "none";
+  };
 }
 
 function filterCards() {
-    const input = document.getElementById("searchInput").value.toLowerCase();
-    const cards = document.getElementsByClassName("app-card");
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const cards = document.getElementsByClassName("app-card");
+  for (let card of cards) {
+    card.style.display = card.innerText.toLowerCase().includes(input)
+      ? "inline-block"
+      : "none";
+  }
+}
 
-    for (let card of cards) {
-        card.style.display = card.innerText.toLowerCase().includes(input)
-            ? "inline-block"
-            : "none";
-    }
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
 }
 </script>
 </head>
