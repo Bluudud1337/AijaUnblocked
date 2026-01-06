@@ -82,16 +82,17 @@ header button:hover {
     inset: 0;
     background-image: url("https://i.gifer.com/SSs5.gif");
     background-repeat: repeat;
-    background-size:  400px 400px;
+    background-size: 400px 400px;
     opacity: 1;
+    z-index: 1;
     pointer-events: none;
-    z-index: 2;
 }
 
 /* CONTENT */
 .section-content {
     position: relative;
-    z-index: 3;
+    z-index: 10;
+
 }
 
 .section-content h2 {
@@ -128,7 +129,7 @@ header button:hover {
     border-radius: 10px;
     cursor: pointer;
     position: relative;
-    z-index: 4;
+    z-index: 11;
 }
 
 .app-card img {
