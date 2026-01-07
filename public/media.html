@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Media Search</title>
+<title>Media</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
   margin: 0;
   background: #000;
-  color: white;
+  color: #fff;
   font-family: Arial, sans-serif;
 }
 
@@ -19,6 +19,9 @@ header {
   background: #090009;
   display: flex;
   gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 input {
@@ -27,6 +30,7 @@ input {
   border-radius: 8px;
   border: none;
   font-size: 16px;
+  outline: none;
 }
 
 button {
@@ -38,12 +42,16 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  opacity: 0.85;
+}
+
 /* PLAYER */
 #player iframe {
   width: 100%;
-  height: 60vh;
+  height: 55vh;
   border: none;
-  margin-top: 10px;
+  background: black;
 }
 
 /* RESULTS */
@@ -68,6 +76,7 @@ button {
 
 .video img {
   width: 100%;
+  display: block;
 }
 
 .video p {
@@ -89,72 +98,83 @@ button {
 <div id="results"></div>
 
 <script>
-/**
- * This recreates the behavior of the media page you linked.
- *
- * We use Piped (privacy YouTube frontend) to:
- *  - search videos
- *  - play selected videos
- * and avoid direct scraping of youtube.com.
- *
- * References:
- * - Piped public instances list (works as privacy frontend) :contentReference[oaicite:0]{index=0}
- */
+/* ===== PIPED FALLBACK SYSTEM ===== */
+const PIPED_APIS = [
+  "https://pipedapi.syncpundit.io",
+  "https://pipedapi.adminforge.de",
+  "https://pipedapi.rivo.lol",
+  "https://api-piped.mha.fi"
+];
 
-const PIPED_API = "https://pipedapi.kavin.rocks"; // A reliable Piped instance
-const CORS_PROXY = "https://api.allorigins.win/raw?url=";
+let apiIndex = 0;
 
-/**
- * Search for videos
- */
+async function fetchPiped(path) {
+  for (let i = 0; i < PIPED_APIS.length; i++) {
+    const api = PIPED_APIS[apiIndex];
+    try {
+      const res = await fetch(api + path);
+      if (!res.ok) throw new Error();
+      return await res.json();
+    } catch {
+      apiIndex = (apiIndex + 1) % PIPED_APIS.length;
+    }
+  }
+  throw new Error("No services available");
+}
+
+/* ===== SEARCH ===== */
 async function search() {
   const query = document.getElementById("q").value.trim();
   if (!query) return;
 
-  document.getElementById("results").innerHTML = "<p>Searching...</p>";
+  document.getElementById("results").innerHTML = "<p>Searching…</p>";
   document.getElementById("player").innerHTML = "";
 
   try {
-    const searchUrl = `${PIPED_API}/search?query=${encodeURIComponent(query)}&type=video`;
-    const resp = await fetch(CORS_PROXY + encodeURIComponent(searchUrl));
-    const data = await resp.json();
+    const data = await fetchPiped(
+      `/search?q=${encodeURIComponent(query)}&filter=videos`
+    );
 
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "";
+    const results = document.getElementById("results");
+    results.innerHTML = "";
 
-    // Display up to 30 videos
-    (data.items || []).slice(0, 30).forEach(video => {
-      const vidId = video.url?.split("v=")?.[1] || video.id;
+    if (!data.items || !data.items.length) {
+      results.innerHTML = "<p>No results found.</p>";
+      return;
+    }
 
+    data.items.slice(0, 30).forEach(v => {
       const card = document.createElement("div");
       card.className = "video";
       card.innerHTML = `
-        <img src="${video.thumbnail}" alt="${video.title}">
-        <p>${video.title}</p>
+        <img src="${v.thumbnail}">
+        <p>${v.title}</p>
       `;
-      card.onclick = () => playVideo(vidId);
-
-      resultsDiv.appendChild(card);
+      card.onclick = () => playVideo(v.id);
+      results.appendChild(card);
     });
 
   } catch (err) {
-    console.error(err);
-    document.getElementById("results").innerHTML = "<p>Search failed.</p>";
+    document.getElementById("results").innerHTML =
+      "<p>No services available.</p>";
   }
 }
 
-/**
- * Play one of the results
- */
-function playVideo(videoId) {
+/* ===== PLAYER ===== */
+function playVideo(id) {
   document.getElementById("player").innerHTML = `
     <iframe
-      src="https://piped.video/embed/${videoId}"
+      src="https://piped.video/embed/${id}"
       allowfullscreen
-      referrerpolicy="no-referrer"
-    ></iframe>
+      referrerpolicy="no-referrer">
+    </iframe>
   `;
 }
+
+/* ENTER KEY SUPPORT */
+document.getElementById("q").addEventListener("keydown", e => {
+  if (e.key === "Enter") search();
+});
 </script>
 
 </body>
