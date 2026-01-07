@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Media</title>
+<title>AijaYT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -98,83 +98,19 @@ button:hover {
 <div id="results"></div>
 
 <script>
-/* ===== PIPED FALLBACK SYSTEM ===== */
-const PIPED_APIS = [
-  "https://pipedapi.syncpundit.io",
-  "https://pipedapi.adminforge.de",
-  "https://pipedapi.rivo.lol",
-  "https://api-piped.mha.fi"
-];
+function search() {
+  const q = document.getElementById("q").value.trim();
+  if (!q) return;
 
-let apiIndex = 0;
-
-async function fetchPiped(path) {
-  for (let i = 0; i < PIPED_APIS.length; i++) {
-    const api = PIPED_APIS[apiIndex];
-    try {
-      const res = await fetch(api + path);
-      if (!res.ok) throw new Error();
-      return await res.json();
-    } catch {
-      apiIndex = (apiIndex + 1) % PIPED_APIS.length;
-    }
-  }
-  throw new Error("No services available");
-}
-
-/* ===== SEARCH ===== */
-async function search() {
-  const query = document.getElementById("q").value.trim();
-  if (!query) return;
-
-  document.getElementById("results").innerHTML = "<p>Searching…</p>";
   document.getElementById("player").innerHTML = "";
-
-  try {
-    const data = await fetchPiped(
-      `/search?q=${encodeURIComponent(query)}&filter=videos`
-    );
-
-    const results = document.getElementById("results");
-    results.innerHTML = "";
-
-    if (!data.items || !data.items.length) {
-      results.innerHTML = "<p>No results found.</p>";
-      return;
-    }
-
-    data.items.slice(0, 30).forEach(v => {
-      const card = document.createElement("div");
-      card.className = "video";
-      card.innerHTML = `
-        <img src="${v.thumbnail}">
-        <p>${v.title}</p>
-      `;
-      card.onclick = () => playVideo(v.id);
-      results.appendChild(card);
-    });
-
-  } catch (err) {
-    document.getElementById("results").innerHTML =
-      "<p>No services available.</p>";
-  }
-}
-
-/* ===== PLAYER ===== */
-function playVideo(id) {
-  document.getElementById("player").innerHTML = `
+  document.getElementById("results").innerHTML = `
     <iframe
-      src="https://piped.video/embed/${id}"
-      allowfullscreen
+      src="https://piped.video/search?q=${encodeURIComponent(q)}"
+      style="width:100%;height:70vh;border:none;"
       referrerpolicy="no-referrer">
     </iframe>
   `;
 }
-
-/* ENTER KEY SUPPORT */
-document.getElementById("q").addEventListener("keydown", e => {
-  if (e.key === "Enter") search();
-});
 </script>
 
 </body>
