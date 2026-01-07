@@ -2,59 +2,78 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>AijaTube</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AijaYT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
   margin: 0;
-  background: black;
-  color: white;
+  background: #000;
+  color: #fff;
   font-family: Arial, sans-serif;
 }
 
+/* HEADER */
 header {
   padding: 15px;
-  background: #000;
-  text-align: center;
+  background: #090009;
+  display: flex;
+  gap: 10px;
 }
 
 input {
-  width: 60%;
+  flex: 1;
   padding: 12px;
-  font-size: 16px;
   border-radius: 8px;
   border: none;
-  outline: none;
+  font-size: 16px;
 }
 
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: linear-gradient(135deg,#7f00ff,#b56cff);
+  color: white;
+  font-weight: bold;
+}
+
+/* PLAYER */
+#player iframe {
+  width: 100%;
+  height: 60vh;
+  border: none;
+}
+
+/* RESULTS */
 #results {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px,1fr));
   gap: 15px;
-  padding: 20px;
+  padding: 15px;
 }
 
 .video {
-  cursor: pointer;
-  background: #111;
+  background: #0d0016;
   border-radius: 10px;
+  cursor: pointer;
   overflow: hidden;
+  transition: transform .15s;
+}
+
+.video:hover {
+  transform: scale(1.03);
 }
 
 .video img {
   width: 100%;
+  display: block;
 }
 
 .video p {
   padding: 8px;
   font-size: 14px;
-}
-
-iframe {
-  width: 100%;
-  height: 60vh;
-  border: none;
 }
 </style>
 </head>
@@ -62,49 +81,86 @@ iframe {
 <body>
 
 <header>
-  <input
-    id="search"
-    placeholder="Search YouTube..."
-    onkeydown="if(event.key==='Enter') searchVideos()"
-  >
+  <input id="search" placeholder="Search videos..." />
+  <button onclick="searchVideos()">Search</button>
 </header>
 
 <div id="player"></div>
 <div id="results"></div>
 
 <script>
-const INSTANCE = "https://invidious.fdn.fr"; // backup-safe instance
+const INSTANCES = [
+  "https://vid.puffyan.us",
+  "https://invidious.fdn.fr",
+  "https://yewtu.be",
+  "https://invidious.snopyta.org"
+];
+
+let instance = null;
+
+async function getInstance() {
+  if (instance) return instance;
+
+  for (const url of INSTANCES) {
+    try {
+      const r = await fetch(`${url}/api/v1/search?q=test&type=video`);
+      if (r.ok) {
+        instance = url;
+        console.log("Using:", url);
+        return url;
+      }
+    } catch {}
+  }
+
+  alert("No video services available.");
+  throw new Error("No instance");
+}
 
 async function searchVideos() {
   const q = document.getElementById("search").value.trim();
   if (!q) return;
 
-  const res = await fetch(`${INSTANCE}/api/v1/search?q=${encodeURIComponent(q)}&type=video`);
-  const data = await res.json();
-
   const results = document.getElementById("results");
-  results.innerHTML = "";
+  results.innerHTML = "<p>Searching...</p>";
 
-  data.slice(0, 20).forEach(v => {
-    const div = document.createElement("div");
-    div.className = "video";
-    div.innerHTML = `
-      <img src="${v.videoThumbnails?.[3]?.url || ""}">
-      <p>${v.title}</p>
-    `;
-    div.onclick = () => playVideo(v.videoId);
-    results.appendChild(div);
-  });
+  try {
+    const inst = await getInstance();
+    const res = await fetch(
+      `${inst}/api/v1/search?q=${encodeURIComponent(q)}&type=video`
+    );
+    const data = await res.json();
+
+    results.innerHTML = "";
+
+    data.slice(0, 24).forEach(v => {
+      const div = document.createElement("div");
+      div.className = "video";
+      div.innerHTML = `
+        <img src="${v.videoThumbnails?.[3]?.url || ""}">
+        <p>${v.title}</p>
+      `;
+      div.onclick = () => playVideo(v.videoId);
+      results.appendChild(div);
+    });
+
+  } catch (e) {
+    results.innerHTML = "<p>Search failed.</p>";
+  }
 }
 
 function playVideo(id) {
   document.getElementById("player").innerHTML = `
     <iframe
-      src="${INSTANCE}/embed/${id}"
+      src="${instance}/embed/${id}"
       allowfullscreen
+      referrerpolicy="no-referrer"
     ></iframe>
   `;
 }
+
+document.getElementById("search").addEventListener("keydown", e => {
+  if (e.key === "Enter") searchVideos();
+});
 </script>
 
 </body>
