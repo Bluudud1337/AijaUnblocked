@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Video Watcher</title>
+<title>Crimson watch</title>
 
 <style>
 :root {
-  --bg: #0b0b12;
+  --bg: #07070c;
   --card: #141427;
   --purple: #8b5cf6;
   --text: #e5e7eb;
@@ -20,10 +20,11 @@
 
 body {
   margin: 0;
-  background: radial-gradient(circle at top, #151530, #050507);
+  background: linear-gradient(180deg, #0b0b18, #050507);
   color: var(--text);
 }
 
+/* SEARCH */
 .search-container {
   padding: 20px;
   display: flex;
@@ -31,8 +32,8 @@ body {
 }
 
 .search-bar {
-  width: min(600px, 90%);
-  padding: 14px 18px;
+  width: min(650px, 92%);
+  padding: 14px 20px;
   border-radius: 999px;
   border: none;
   outline: none;
@@ -41,20 +42,30 @@ body {
   font-size: 16px;
 }
 
+/* PLAYER */
 .player-wrapper {
   max-width: 1100px;
-  margin: 0 auto 30px;
+  margin: 0 auto 25px;
   padding: 0 16px;
 }
 
 iframe {
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-radius: 14px;
+  border-radius: 16px;
   border: none;
   background: black;
 }
 
+/* STATUS */
+.status {
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+/* GRID */
 .video-grid {
   max-width: 1300px;
   margin: 0 auto;
@@ -69,11 +80,12 @@ iframe {
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .video-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(139,92,246,0.25);
 }
 
 .thumbnail {
@@ -89,15 +101,11 @@ iframe {
 .video-title {
   font-size: 14px;
   font-weight: 600;
+  line-height: 1.3;
 }
 
-.status {
-  text-align: center;
-  opacity: 0.7;
-  padding: 10px;
-}
-
-@media (max-width: 1000px) {
+/* RESPONSIVE */
+@media (max-width: 1100px) {
   .video-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -110,21 +118,27 @@ iframe {
 <body>
 
 <div class="search-container">
-  <input class="search-bar" id="searchInput" placeholder="Search videos…" />
+  <input
+    id="searchInput"
+    class="search-bar"
+    placeholder="Search videos…"
+  />
 </div>
 
 <div class="player-wrapper">
   <iframe id="player" allowfullscreen></iframe>
 </div>
 
-<div class="status" id="status"></div>
+<div class="status" id="status">Loading…</div>
 <div class="video-grid" id="videoGrid"></div>
 
 <script>
-const INSTANCES = [
-  "https://piped.video",
-  "https://piped.projectsegfau.lt",
-  "https://piped.lunar.icu"
+/* ===== SOURCES (AUTO FALLBACK) ===== */
+const SOURCES = [
+  { type: "piped", url: "https://piped.video" },
+  { type: "piped", url: "https://piped.projectsegfau.lt" },
+  { type: "invidious", url: "https://yewtu.be" },
+  { type: "invidious", url: "https://vid.puffyan.us" }
 ];
 
 const player = document.getElementById("player");
@@ -132,62 +146,76 @@ const grid = document.getElementById("videoGrid");
 const status = document.getElementById("status");
 const searchInput = document.getElementById("searchInput");
 
-async function fetchWithFallback(query) {
-  status.textContent = "Loading videos…";
+async function searchVideos(query) {
+  status.textContent = "Searching…";
   grid.innerHTML = "";
 
-  for (const instance of INSTANCES) {
+  for (const src of SOURCES) {
     try {
-      const res = await fetch(
-        `${instance}/api/v1/search?q=${encodeURIComponent(query)}&type=video`
-      );
-      if (!res.ok) throw new Error("Bad response");
+      const api = `${src.url}/api/v1/search?q=${encodeURIComponent(query)}&type=video`;
+      const res = await fetch(api);
+      if (!res.ok) throw new Error("Blocked");
+
       const data = await res.json();
-      renderVideos(data.items, instance);
-      status.textContent = `Source: ${instance}`;
+      renderResults(data, src);
+      status.textContent = `Source: ${src.url}`;
       return;
+
     } catch (err) {
-      console.warn("Failed:", instance);
+      console.warn("Failed:", src.url);
     }
   }
 
   status.textContent = "All sources blocked or unavailable.";
 }
 
-function renderVideos(videos, instance) {
+function renderResults(data, src) {
+  const items = data.items || data;
   grid.innerHTML = "";
 
-  videos.slice(0, 8).forEach((video, i) => {
+  items.slice(0, 8).forEach((v, i) => {
+    const id = v.id || v.videoId;
+    const title = v.title;
+    const thumb =
+      v.thumbnail ||
+      (v.videoThumbnails && v.videoThumbnails.at(-1)?.url);
+
     const card = document.createElement("div");
     card.className = "video-card";
 
     card.innerHTML = `
-      <img class="thumbnail" src="${video.thumbnail}">
+      <img class="thumbnail" src="${thumb}">
       <div class="video-info">
-        <div class="video-title">${video.title}</div>
+        <div class="video-title">${title}</div>
       </div>
     `;
 
+    const embedUrl =
+      src.type === "piped"
+        ? `${src.url}/embed/${id}`
+        : `${src.url}/embed/${id}`;
+
     card.onclick = () => {
-      player.src = `${instance}/embed/${video.id}`;
+      player.src = embedUrl;
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     grid.appendChild(card);
 
     if (i === 0) {
-      player.src = `${instance}/embed/${video.id}`;
+      player.src = embedUrl;
     }
   });
 }
 
 searchInput.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    fetchWithFallback(searchInput.value.trim());
+  if (e.key === "Enter" && searchInput.value.trim()) {
+    searchVideos(searchInput.value.trim());
   }
 });
 
-fetchWithFallback("trending");
+/* DEFAULT LOAD */
+searchVideos("trending");
 </script>
 
 </body>
