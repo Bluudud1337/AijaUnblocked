@@ -627,6 +627,18 @@ iframe.fullscreen {
         <div class="game-card" onclick="openFullscreen('https://fnf.run3.io/midfight/2/')">
             <img src="https://i1.sndcdn.com/artworks-UfzAwNw2wehZw0g0-zx7tQQ-t500x500.png">
             <h3>FnF Mid Fight Masses</h3>
+                </div>
+        <div class="game-card" onclick="openFullscreen('https://fnf.kdata1.com/2024/fnf/5000/')">
+            <img src="https://tse4.mm.bing.net/th/id/OIP.NKqfrjuDg1GNk3IZvY_biAAAAA?rs=1&pid=ImgDetMain&o=7&rm=3">
+            <h3>FnF</h3>
+     </div>
+        <div class="game-card" onclick="openFullscreen('https://fnf.run3.io/midfight/2/')">
+            <img src="https://i1.sndcdn.com/artworks-UfzAwNw2wehZw0g0-zx7tQQ-t500x500.png">
+            <h3>FnF Mid Fight Masses</h3>
+       </div>
+        <div class="game-card" onclick="openFullscreen('https://fnf.run3.io/midfight/2/')">
+            <img src="https://i1.sndcdn.com/artworks-UfzAwNw2wehZw0g0-zx7tQQ-t500x500.png">
+            <h3>Bendy & the Ink Machine</h3>
                    
     </div>
 </div>
@@ -750,74 +762,6 @@ function setMode(mode){
 </body>
 </html>
 
-<script>
-/* POPUP */
-const popupMessages = [
-    "Welcome to Aija unblocked.",
-    "join our discord!",
-    "Loading...",
-    "why is the sites code ALWAYS breaking??",
-    "Dev team NOWHERE to be seen...",
-    "Nerf TripWire dude please...",
-    "and i know that you know, that you know, that you mine..",
-    "SharkySab get a job..",
-    "Maxwell, youve been DEGLOVED.",
-    "Silver the fraudHog..",
-    "Github sites take like 5 years to update if you edited the code and commited changes..",
-    "AstraNova you actual bop bro",
-];
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-
-window.onload = () => {
-    const popup = document.getElementById("popup-message");
-    popup.textContent = popupMessages[Math.floor(Math.random() * popupMessages.length)];
-    popup.style.opacity = 1;
-    setTimeout(() => popup.style.opacity = 0, 3000); // disappear after 3s
-    updateGameCount();
-};
-
-/* FULLSCREEN */
-function openFullscreen(url) {
-    const iframe = document.createElement("iframe");
-    iframe.src = url;
-    iframe.className = "fullscreen";
-    document.body.appendChild(iframe);
-
-    const btn = document.getElementById("close-btn");
-    btn.style.display = "block";
-    btn.onclick = () => {
-        iframe.remove();
-        btn.style.display = "none";
-    };
-}
-
-/* SEARCH */
-function filterGames() {
-    const input = searchInput.value.toLowerCase();
-    document.querySelectorAll(".game-card").forEach(card => {
-        card.style.display = card.innerText.toLowerCase().includes(input)
-            ? "block"
-            : "none";
-    });
-}
-
-/* COUNTER */
-function updateGameCount() {
-    document.getElementById("game-counter").textContent =
-        document.querySelectorAll(".game-card").length + " Games currently..";
-}
-
-/* PARTICLES CONFIG */
-particlesJS("particles-js", {
-    particles: {
-        number: { value: 80 },
-        color: { value: "#8000ff" },
-        size: { value: 4 },
-        move: { speed: 1 }
-    }
-});
 </script>
 <script>
   if ("serviceWorker" in navigator) {
