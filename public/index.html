@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Axon Unblocked X+</title>
+<title>Axon</title>
 <link rel="icon" href="icon.png">
 <link rel="manifest" href="manifest.json">
 
@@ -46,8 +46,10 @@ canvas {
     font-weight: bold;
     text-align: center;
     z-index: 9999;
-    pointer-events: auto;
+    pointer-events: none;
     padding: 20px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 /* HEADER */
@@ -671,89 +673,76 @@ iframe.fullscreen {
         <div class="game-card" onclick="openFullscreen('https://www.archive.play-games.com/games/archive/3/StickWithIt/index.html')">
             <img src="https://tse2.mm.bing.net/th/id/OIP.xr6HeXS5QL6X6OuRCrrcVgHaHa?rs=1&pid=ImgDetMain&o=7&rm=3">
             <h3>Stick with it</h3>
+
 </div>
 
 <script>
-// POPUP MESSAGES
-const popupMessages = [
-    "Welcome to Axon Unblocked.",
-    "Join our Discord!",
+// POPUP MESSAGE LOGIC
+const popup = document.getElementById("popup-message");
+const messages = [
+    "Welcome to Axon.",
+    "join our discord!",
     "Loading...",
-    "Why is the site's code always breaking?",
-    "Dev team nowhere to be seen...",
+    "why is the sites code ALWAYS breaking??",
+    "Dev team NOWHERE to be seen...",
     "Nerf TripWire dude please...",
-    "And I know that you know, that you know, that you mine..",
     "SharkySab get a job..",
-    "Maxwell, you've been DEGLOVED.",
+    "Maxwell, youve been DEGLOVED.",
     "Silver the fraudHog..",
-    "Vercel deployments take ages to update..",
-    "A lot of genuine effort has been put into this project, thanks for playing..",
+    "Alot of genuine effort and love has been put into this project, thanks for playing.. ",
     "3,2,1..",
-    "I just wanted to see tung tung tung saheur..💔",
-    "Frayek is a corn ball",
-    "Bring back hyper sonic...",
-    "AXON IS SO TUFFF",
-    "The Tech Department is so bothersome at times...",
+    "i just wanted to see tung tung tung saheur..💔",
+    "if everytime i got mad at gpt were = stuns i would have had 50 ragemodes by now....",
+    "frayek is a corn ball.",
+    "frayek needs to be DEGLOVED",
+    "frayek is the best at geometry dash...",
+    "follow @frayek🌺 on tiktok",
+    "bring back hyper sonic...",
+    "https://t9os.vercel.app/class.html",
+    "why does nobody use the apps?",
     "Check out the apps!",
 ];
+let currentIndex = 0;
 
-let popupIndex = 0;
-const popupDiv = document.getElementById('popup-message');
+function showPopupMessage() {
+    popup.textContent = messages[currentIndex];
+    popup.style.opacity = 1;
+    popup.style.pointerEvents = "auto";
 
-function showPopup() {
-    popupDiv.innerText = popupMessages[popupIndex];
-    popupDiv.style.display = 'flex';
+    setTimeout(() => {
+        popup.style.opacity = 0;
+        popup.style.pointerEvents = "none";
+    }, 3000);
+
+    currentIndex = (currentIndex + 1) % messages.length;
 }
 
-popupDiv.addEventListener('click', () => {
-    popupIndex++;
-    if (popupIndex >= popupMessages.length) {
-        popupDiv.style.display = 'none';
-    } else {
-        showPopup();
-    }
-});
+showPopupMessage();
+setInterval(showPopupMessage, 5000);
 
-showPopup();
+// FULLSCREEN GAME LOGIC
+const closeBtn = document.getElementById("close-btn");
+function openFullscreen(url) {
+    const iframe = document.createElement("iframe");
+    iframe.src = url;
+    iframe.className = "fullscreen";
+    document.body.appendChild(iframe);
+    closeBtn.style.display = "block";
+    closeBtn.onclick = () => {
+        iframe.remove();
+        closeBtn.style.display = "none";
+    };
+}
 
-// RED & BLACK WAVE ANIMATION
-const canvas = document.getElementById('wave-bg');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let waves = [];
-for (let i = 0; i < 5; i++) {
-    waves.push({
-        y: canvas.height / 5 * i,
-        amplitude: 50 + i * 10,
-        length: 0.01 + i * 0.005,
-        speed: 0.02 + i * 0.005,
-        offset: 0
+// SEARCH FILTER
+function filterGames() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const cards = document.querySelectorAll(".game-card");
+    cards.forEach(card => {
+        const title = card.querySelector("h3").textContent.toLowerCase();
+        card.style.display = title.includes(input) ? "block" : "none";
     });
 }
-
-function animateWaves() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let wave of waves) {
-        ctx.beginPath();
-        ctx.moveTo(0, wave.y);
-        for (let x = 0; x < canvas.width; x++) {
-            ctx.lineTo(x, wave.y + Math.sin(x * wave.length + wave.offset) * wave.amplitude);
-        }
-        ctx.strokeStyle = '#ff0000';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        wave.offset += wave.speed;
-    }
-    requestAnimationFrame(animateWaves);
-}
-animateWaves();
-
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
 </script>
 </body>
 </html>
