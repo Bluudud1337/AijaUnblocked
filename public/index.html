@@ -79,11 +79,15 @@ header button {
 }
 
 /* GAME COUNTER */
-#game-counter {
-    font-size: 48px;
-    font-weight: bold;
-    color: var(--accent-color);
-    margin-bottom: 20px;
+// UPDATE GAME COUNTER
+function updateGameCounter() {
+    const cards = document.querySelectorAll(".game-card");
+    const counter = document.getElementById("game-counter");
+    counter.textContent = `${cards.length} Games`;
+}
+
+// Run on page load
+updateGameCounter();
 }
 
 /* SEARCH */
