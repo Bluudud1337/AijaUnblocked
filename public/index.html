@@ -148,6 +148,33 @@ header button {
     border-radius: 10px 10px 0 0;
 }
 
+     <script>
+function filterGames() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const games = document.querySelectorAll('.game-card');
+    let count = 0;
+
+    games.forEach(game => {
+        const title = game.querySelector('h3').textContent.toLowerCase();
+        if (title.includes(input)) {
+            game.style.display = ''; // show
+            count++;
+        } else {
+            game.style.display = 'none'; // hide
+        }
+    });
+
+    // Update counter
+    document.getElementById('game-counter').textContent = count + " Games";
+}
+
+// Initialize counter on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const games = document.querySelectorAll('.game-card');
+    document.getElementById('game-counter').textContent = games.length + " Games";
+});
+</script>
+
 /* FULLSCREEN GAME */
 iframe.fullscreen {
     position: fixed;
