@@ -801,41 +801,68 @@ const planet = {
     x: canvas.width / 2,
     y: canvas.height / 2,
     radius: 80,
-    color: '#320ff0'
+    color: '#7f3fff' // brighter purple
 };
 
+// Ring properties
 const ring = {
     innerRadius: 100,
     outerRadius: 120,
-    color: 'rgba(50, 15, 240, 0.5)',
+    color: 'rgba(200, 150, 255, 0.7)', // brighter, more visible
+    lineWidth: 6,
     rotation: 0
 };
+
+// Generate star field
+const stars = [];
+for (let i = 0; i < 150; i++) {
+    stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2
+    });
+}
+
+function drawStars() {
+    stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+    });
+}
 
 function animatePlanet() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Fill background
-    ctx.fillStyle = '#000'; // space color
+    // Draw space background
+    ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw ring
+    // Draw stars
+    drawStars();
+
+    // Draw rotating ring
     ctx.save();
     ctx.translate(planet.x, planet.y);
     ctx.rotate(ring.rotation);
     ctx.beginPath();
     ctx.ellipse(0, 0, ring.outerRadius, ring.innerRadius, 0, 0, Math.PI * 2);
     ctx.strokeStyle = ring.color;
-    ctx.lineWidth = 10;
+    ctx.lineWidth = ring.lineWidth;
     ctx.stroke();
     ctx.restore();
 
-    // Draw planet
+    // Draw planet with glow
     ctx.beginPath();
+    ctx.shadowColor = planet.color;
+    ctx.shadowBlur = 30;
     ctx.arc(planet.x, planet.y, planet.radius, 0, Math.PI * 2);
     ctx.fillStyle = planet.color;
     ctx.fill();
+    ctx.shadowBlur = 0; // reset shadow
 
-    // Rotate the ring slightly for next frame
+    // Rotate the ring slightly
     ring.rotation += 0.01;
 
     requestAnimationFrame(animatePlanet);
